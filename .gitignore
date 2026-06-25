@@ -1,0 +1,63 @@
+# --- Data, models, checkpoints (requested) ---
+data/
+outputs/checkpoints/
+
+# Verbose, regenerable training log (loss_log.csv and comparison.md are tracked)
+outputs/train_run.log
+
+# Model weights / adapters / quantized formats
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.gguf
+*.ggml
+*.onnx
+adapter_model/
+
+# --- Python virtual environment ---
+.venv/
+venv/
+env/
+
+# --- Python caches / build artifacts ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- OS cruft ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# --- Claude Code (local only) ---
+.claude/
+
+# --- IDE / editors ---
+.vscode/
+.idea/
+
+# --- Experiment tracking ---
+wandb/
+mlruns/
+runs/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Hugging Face cache ---
+.cache/
+huggingface/

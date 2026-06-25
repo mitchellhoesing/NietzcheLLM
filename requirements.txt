@@ -1,0 +1,9 @@
+# Pinned, mutually compatible set for QLoRA SFT on an 8GB RTX 3070 (Python 3.10).
+# NOTE: torch is installed separately with the CUDA 12.1 wheel index:
+#   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+transformers==4.47.1
+trl==0.14.0
+peft==0.14.0
+accelerate==1.2.1
+bitsandbytes==0.45.0
+datasets==3.2.0
