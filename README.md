@@ -71,12 +71,14 @@ Both Qwen models are ungated on Hugging Face — no token required.
 │   ├── validate_data.py    # JSONL validity, duplicates, length stats, samples
 │   ├── train.py            # QLoRA SFT training
 │   ├── compare.py          # base vs fine-tuned side-by-side -> outputs/comparison.md
+│   ├── perplexity.py       # base vs fine-tuned held-out perplexity -> outputs/perplexity.md
 │   └── chat.py             # interactive REPL with the fine-tuned model
 ├── outputs/
 │   ├── checkpoints/        # per-epoch checkpoints + final/ adapter
 │   ├── loss_log.csv        # training loss every 10 steps
 │   ├── train_run.log       # full training console log
-│   └── comparison.md       # side-by-side eval outputs
+│   ├── comparison.md       # side-by-side eval outputs
+│   └── perplexity.md       # held-out perplexity, base vs fine-tuned
 ├── requirements.txt
 └── README.md
 ```
@@ -104,6 +106,7 @@ python scripts/train.py
 
 ```bash
 python scripts/compare.py    # writes outputs/comparison.md
+python scripts/perplexity.py # writes outputs/perplexity.md
 python scripts/chat.py       # interactive REPL
 ```
 
@@ -147,6 +150,22 @@ python scripts/chat.py       # interactive REPL
 
 Loss is logged every 10 steps to console and `outputs/loss_log.csv`; adapter
 checkpoints are saved each epoch; peak VRAM is printed at the end of the run.
+
+## Evaluation
+
+`perplexity.py` scores both models on the 40 held-out eval examples, measuring
+perplexity over the assistant tokens only (completion-only, matching the training
+objective). Both models are evaluated in 4-bit, so the comparison is apples-to-apples
+and the only variable is the LoRA adapter:
+
+| Model | Held-out perplexity |
+|---|---|
+| Base Qwen2.5-1.5B-Instruct | 71.99 |
+| Fine-tuned (base + adapter) | 33.20 |
+
+Fine-tuning cuts held-out perplexity **~54%** (72 → 33) — the model fits the target
+Nietzsche voice far better than the base model, on examples it never saw in training.
+The qualitative side-by-side for these same questions is in `outputs/comparison.md`.
 
 ## Design decisions
 
