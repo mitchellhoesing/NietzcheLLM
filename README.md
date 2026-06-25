@@ -137,7 +137,7 @@ python scripts/chat.py       # interactive REPL
 |---|---|
 | Base model | Qwen2.5-1.5B-Instruct (fallback: 0.5B) |
 | Quantization | 4-bit NF4, double quant, bf16 compute (bitsandbytes) |
-| LoRA | r=16, alpha=32, dropout=0.05, all linear projections (q,k,v,o,gate,up,down) |
+| LoRA | r=8, alpha=16, dropout=0.05, all linear projections (q,k,v,o,gate,up,down) |
 | Sequence length | 768 tokens |
 | Batch | 2 per device × 8 grad accumulation = 16 effective |
 | Schedule | 3 epochs, lr 2e-4, cosine, warmup ratio 0.03 |
