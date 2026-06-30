@@ -81,12 +81,6 @@ def corpus_perplexity(model, tokenizer, examples: list[dict], label: str) -> flo
     return math.exp(total_nll / total_tokens)
 
 
-def free_model(model) -> None:
-    del model
-    gc.collect()
-    torch.cuda.empty_cache()
-
-
 def main() -> None:
     base_model_name = (ADAPTER_DIR / "base_model.txt").read_text(encoding="utf-8").strip()
     print(f"Base model: {base_model_name}")
@@ -98,12 +92,16 @@ def main() -> None:
 
     base_model = load_quantized_base(base_model_name)
     base_ppl = corpus_perplexity(base_model, tokenizer, examples, "base")
-    free_model(base_model)
+    del base_model
+    gc.collect()
+    torch.cuda.empty_cache()
 
     tuned_base = load_quantized_base(base_model_name)
     tuned_model = PeftModel.from_pretrained(tuned_base, str(ADAPTER_DIR))
     tuned_ppl = corpus_perplexity(tuned_model, tokenizer, examples, "fine-tuned")
-    free_model(tuned_model)
+    del tuned_model, tuned_base
+    gc.collect()
+    torch.cuda.empty_cache()
 
     reduction = (base_ppl - tuned_ppl) / base_ppl * 100
     print(f"\nBase perplexity:       {base_ppl:.2f}")

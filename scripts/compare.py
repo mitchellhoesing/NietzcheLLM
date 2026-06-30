@@ -87,12 +87,6 @@ def generate_answers(model, tokenizer, questions: list[str], label: str) -> list
     return answers
 
 
-def free_model(model) -> None:
-    del model
-    gc.collect()
-    torch.cuda.empty_cache()
-
-
 def main() -> None:
     base_model_name = (ADAPTER_DIR / "base_model.txt").read_text(encoding="utf-8").strip()
     print(f"Base model: {base_model_name}")
@@ -105,13 +99,17 @@ def main() -> None:
     torch.manual_seed(42)
     base_model = load_quantized_base(base_model_name)
     base_answers = generate_answers(base_model, tokenizer, questions, "base")
-    free_model(base_model)
+    del base_model
+    gc.collect()
+    torch.cuda.empty_cache()
 
     torch.manual_seed(42)
     tuned_base = load_quantized_base(base_model_name)
     tuned_model = PeftModel.from_pretrained(tuned_base, str(ADAPTER_DIR))
     tuned_answers = generate_answers(tuned_model, tokenizer, questions, "fine-tuned")
-    free_model(tuned_model)
+    del tuned_model, tuned_base
+    gc.collect()
+    torch.cuda.empty_cache()
 
     lines = [
         "# Base vs Fine-Tuned Comparison",
